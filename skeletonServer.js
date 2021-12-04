@@ -1,21 +1,9 @@
-import { startServer, getStatus, resumeServer } from "./gamocosmWrapper.js";
+// import { startServer, getStatus, resumeServer } from "./gamocosmWrapper.js";
 import mc from "minecraft-protocol";
 import proxyTCP from "node-tcp-proxy";
 
-function getServerStatus(serverData) {
-    return new Promise((resolve, reject) => {
-        getStatus(serverData.id, serverData.key).then(result => {
-            if (result.server && result.minecraft && result.ip && result.status == null)
-                result.status = "up";
-            else if (result.server && !result.minecraft && result.ip && result.status == null)
-                result.status = "paused";
-            else if (!result.server && result.status == null && !result.minecraft && result.ip == null)
-                result.status = "down";
-            else if (!result.server && !result.minecraft && result.ip != null && result.status == null)
-                result.status = "broken";
-            resolve(result);
-        });
-    });
+async function getServerStatus(serverData) {
+    return {status: "down"};
 }
 
 function checkUntilServerIsUp(serverData, mcServer) {
@@ -34,7 +22,7 @@ function checkUntilServerIsUp(serverData, mcServer) {
                         });
                         break;
                     case "paused":
-                        resumeServer(serverData.id, serverData.key);
+                        // resumeServer(serverData.id, serverData.key);
                         break;
                 }
             });
@@ -50,20 +38,21 @@ function checkUntilServerIsDown(serverData, proxyToNewDO) {
                         proxyToNewDO.end();
                     clearInterval(loopUntilServerIsDown);
                     setTimeout(() => {
-                        launchSkeletonServer(serverData);
+                        launchSkeletonServerImpl(serverData);
                     }, 5000);
                 }
             });
     }, 5000);
 }
 
-function launchSkeletonServer(serverData, serverName) {
+function launchSkeletonServerImpl(serverData, serverName) {
+    console.log("hi")
     let mcServerOptions = {
         host: "0.0.0.0",
         port: serverData.port,
         beforePing: (res, client) => {
             res.version.name = "The server is offline!";
-            res.version.protocol = 0;
+            res.version.protocol = 756;  // MC 1.17
             res.description.text = "§cThe Minecraft server " + serverName
                 + " is offline!\n§6If you want to launch it please join it.";
         },
@@ -80,6 +69,7 @@ function launchSkeletonServer(serverData, serverName) {
     if (serverData.version) {
         mcServerOptions["version"] = serverData.version;
     }
+    console.log('mcServer');
     const mcServer = mc.createServer(mcServerOptions);
 
     mcServer.on("login", (client) => {
@@ -91,13 +81,14 @@ function launchSkeletonServer(serverData, serverName) {
                         if (isServerNeededToStart) {
                             isServerNeededToStart = false;
                             console.log("starting the server " + serverName + " because someone joined it!");
-                            startServer(serverData.id, serverData.key);
-                            checkUntilServerIsUp(serverData, mcServer);
+                            // startServer(serverData.id, serverData.key);
+                            // checkUntilServerIsUp(serverData, mcServer);
                         }
                         break;
                     case "paused":
-                        resumeServer(serverData.id, serverData.key);
-                        checkUntilServerIsUp(serverData, mcServer);
+                        console.log('resuming server')
+                        // resumeServer(serverData.id, serverData.key);
+                        // checkUntilServerIsUp(serverData, mcServer);
                         break;
                 }
             });
@@ -109,9 +100,11 @@ function launchSkeletonServer(serverData, serverName) {
     });
 }
 
-export default function (serverData, serverName) {
+export default function launchSkeletonServer(serverData, serverName) {
+    console.log("hello");
     getServerStatus(serverData)
         .then(result => {
+            console.log("status", "down");
             switch (result.status) {
                 case "up":
                     const proxyToNewDO = proxyTCP.createProxy(serverData.port, result.ip, 25565);
@@ -121,11 +114,12 @@ export default function (serverData, serverName) {
                 case "preparing":
                 case "broken":
                 case "down":
-                    launchSkeletonServer(serverData, serverName);
+                    console.log("down");
+                    launchSkeletonServerImpl(serverData, serverName);
                     break;
                 case "paused":
                     resumeServer(serverData.id, serverData.key);
-                    launchSkeletonServer(serverData, serverName);
+                    launchSkeletonServerImpl(serverData, serverName);
                     break;
                 case "saving":
                     checkUntilServerIsDown(serverData);
