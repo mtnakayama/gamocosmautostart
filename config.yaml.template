@@ -9,5 +9,5 @@ mc_server:  # the actual MC server to connect to
 
 wake_server:  # the server to wake up
   mac: 00:00:00:00:00:00
-  # address: 0.0.0.0  # comment out if same as mc_server
+  # address: 255.255.255.255
   # port: 9

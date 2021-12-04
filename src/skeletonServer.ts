@@ -3,16 +3,32 @@ import mc, { Server } from 'minecraft-protocol';
 // @ts-ignore
 import proxyTCP from 'node-tcp-proxy';
 
-import { Config } from './loadConfig';
+import { Config } from './loadConfig.js';
+import { wake } from './wake.js';
 
 enum ServerStatus {
     Down,
     Up
 }
 
-async function getServerStatus(config: Config): Promise<ServerStatus> {
-    return ServerStatus.Down;
-}
+// class ServerState {
+//     readonly config: Config;
+//     status: ServerStatus;
+
+//     constructor(config: Config) {
+//         this.config = config;
+//         this.status = ServerStatus.Down;
+//         this.updateState();
+//     }
+//     async getServerStatus(): Promise<ServerStatus> {
+//         return ServerStatus.Down;
+//     }
+
+//     async updateState(): Promise<ServerState> {
+
+//     }
+// }
+
 
 // function checkUntilServerIsUp(config: Config) {
 //     const loopUntilServerIsUp = setInterval(() => {
@@ -64,7 +80,9 @@ function launchSkeletonServerImpl(config: Config) {
         };
         client.write("kick_disconnect", { reason: JSON.stringify(reasonKick) });
 
-        // start server
+        (async () => {
+            await wake(config);
+        })();
     });
 }
 

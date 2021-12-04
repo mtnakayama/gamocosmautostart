@@ -55,14 +55,13 @@ function fillDefaults(config: any): Config {
         wakeServer: {
             // address is copied from mc_server
             mac: '00:00:00:00:00:00',
+            address: '255.255.255.255',
             port: 9
         }
     };
 
     let newConfig = config;
     newConfig = fillDefaultProperties(newConfig, defaultConfig);
-    // assume that wake_server address is the same as mc_server unless told otherwise
-    fillDefaultProperties(newConfig.wakeServer, newConfig.mcServer);
 
     return newConfig;
 }

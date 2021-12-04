@@ -26,13 +26,15 @@
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "minecraft-protocol": "github:PrismarineJS/node-minecraft-protocol",
-    "node-tcp-proxy": "0.0.15"
+    "node-tcp-proxy": "0.0.15",
+    "wol": "^1.0.7"
   },
   "type": "module",
   "devDependencies": {
     "@types/is": "^0.0.21",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash": "^4.14.177",
+    "@types/wol": "^1.0.1",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
     "eslint": "^8.4.0",
