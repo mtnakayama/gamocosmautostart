@@ -46,7 +46,6 @@ function fillDefaults(config: any): Config {
         serverName: 'Example',
         skeletonServer: {
             port: DEFAULT_MC_PORT,
-            onlineMode: true,
             protocolVersion: 755
         },
         mcServer: {

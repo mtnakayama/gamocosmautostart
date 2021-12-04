@@ -1,8 +1,7 @@
 server_name: Example
 skeleton_server:  # this fake skeleton MC server
   # port: 25565
-  # online_mode = true
-  # protocol_version = 47 # optional, use it only if you are having issue with displaying the MOTD, use protocol versions from https://wiki.vg/Protocol_version_numbers
+  # protocol_version = 755 # optional, use it only if you are having issue with displaying the MOTD, use protocol versions from https://wiki.vg/Protocol_version_numbers
 
 mc_server:  # the actual MC server to connect to
   address: 0.0.0.0
