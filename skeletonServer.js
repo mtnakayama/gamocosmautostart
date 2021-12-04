@@ -45,14 +45,14 @@ function checkUntilServerIsDown(serverData, proxyToNewDO) {
     }, 5000);
 }
 
-function launchSkeletonServerImpl(serverData, serverName) {
+function launchSkeletonServerImpl(config) {
     console.log("hi")
     let mcServerOptions = {
         host: "0.0.0.0",
         port: serverData.port,
         beforePing: (res, client) => {
             res.version.name = "The server is offline!";
-            res.version.protocol = 756;  // MC 1.17
+            res.version.protocol = config.skeletonServer.protocolVersion;  // MC 1.17
             res.description.text = "§cThe Minecraft server " + serverName
                 + " is offline!\n§6If you want to launch it please join it.";
         },

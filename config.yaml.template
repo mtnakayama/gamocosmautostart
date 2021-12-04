@@ -1,0 +1,13 @@
+skeleton_server:  # this fake skeleton MC server
+  # port: 25565
+  # online_mode = true
+  # protocol_version = 47 # optional, use it only if you are having issue with displaying the MOTD, use protocol versions from https://wiki.vg/Protocol_version_numbers
+
+mc_server:  # the actual MC server to connect to
+  address: 0.0.0.0
+  # port: 25565
+
+wake_server:  # the server to wake up
+  mac: 00:00:00:00:00:00
+  # address: 0.0.0.0  # comment out if same as mc_server
+  # port: 9

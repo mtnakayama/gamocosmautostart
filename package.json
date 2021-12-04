@@ -20,6 +20,8 @@
   "dependencies": {
     "@iarna/toml": "^2.2.3",
     "got": "^10.7.0",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
     "minecraft-protocol": "github:PrismarineJS/node-minecraft-protocol",
     "node-tcp-proxy": "0.0.15"
   },
