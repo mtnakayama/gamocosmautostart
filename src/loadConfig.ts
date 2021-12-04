@@ -2,7 +2,7 @@ import { Buffer } from 'buffer';
 import fs from 'fs';
 import url from 'url';
 
-import * as is from 'is';  // is.js
+import is from 'is';  // is.js
 import yaml from 'js-yaml';
 import lodash from 'lodash';
 
@@ -47,7 +47,7 @@ function fillDefaults(config: any): Config {
         skeletonServer: {
             port: DEFAULT_MC_PORT,
             onlineMode: true,
-            protocolVersion: 47
+            protocolVersion: 755
         },
         mcServer: {
             address: '0.0.0.0',
@@ -62,9 +62,8 @@ function fillDefaults(config: any): Config {
 
     let newConfig = config;
     newConfig = fillDefaultProperties(newConfig, defaultConfig);
-
     // assume that wake_server address is the same as mc_server unless told otherwise
-    fillDefaultProperties(newConfig.wake_server, newConfig.mc_server);
+    fillDefaultProperties(newConfig.wakeServer, newConfig.mcServer);
 
     return newConfig;
 }

@@ -7,3 +7,5 @@ function main() {
     skeletonServer.start(config);
     console.log('done')
 }
+
+main();

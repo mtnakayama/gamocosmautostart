@@ -1,4 +1,4 @@
-import * as is from 'is';  // is.js
+import is from 'is';  // is.js
 import mc, { Server } from 'minecraft-protocol';
 // @ts-ignore
 import proxyTCP from 'node-tcp-proxy';
