@@ -18,9 +18,11 @@
     "url": "https://github.com/unixfox/gamocosmautostart/issues"
   },
   "homepage": "https://github.com/unixfox/gamocosmautostart#readme",
+  "//": "`is_js` installed as `is` is a workaround for https://github.com/arasatasaygin/is.js/issues/322#issuecomment-868371629",
   "dependencies": {
     "@iarna/toml": "^2.2.3",
     "got": "^10.7.0",
+    "is": "npm:is_js@^0.9.0",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "minecraft-protocol": "github:PrismarineJS/node-minecraft-protocol",
@@ -28,6 +30,9 @@
   },
   "type": "module",
   "devDependencies": {
+    "@types/is": "^0.0.21",
+    "@types/js-yaml": "^4.0.5",
+    "@types/lodash": "^4.14.177",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
     "eslint": "^8.4.0",

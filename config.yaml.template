@@ -1,3 +1,4 @@
+server_name: Example
 skeleton_server:  # this fake skeleton MC server
   # port: 25565
   # online_mode = true

@@ -1,10 +1,9 @@
-import launchSkeletonServer from "./skeletonServer.js";
-import loadConfig from './loadConfig.js';
+import * as skeletonServer from './skeletonServer.js';
+import { loadConfig } from './loadConfig.js';
 
-Object.keys(configFile.servers).forEach(serverName => {
-    console.log("Loading the server " + serverName);
-    const serverData = configFile.servers[serverName];
+function main() {
+    console.log("Loading the server.");
     const config = loadConfig();
-    // launchSkeletonServer(serverData, serverName);
+    skeletonServer.start(config);
     console.log('done')
-});
+}

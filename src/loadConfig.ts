@@ -1,26 +1,49 @@
+import { Buffer } from 'buffer';
 import fs from 'fs';
+import url from 'url';
 
+import * as is from 'is';  // is.js
 import yaml from 'js-yaml';
 import lodash from 'lodash';
 
 const DEFAULT_MC_PORT = 25565;
 
-export default function(configPath) {
-    configPath = configPath ? configPath : './config.yaml';
-    // Get document, or throw exception on error
-    try {
-        let doc = yaml.load(fs.readFileSync(configPath, 'utf8'));
-        doc = camelizeKeys(doc);
-        doc = fillDefaults(doc);
-        console.log(doc);
-        return doc;
-    } catch (e) {
-        console.log(e);
-    }
+export interface SkeletonServerConfig {
+    port: number;
+    onlineMode: boolean;
+    protocolVersion: number;
 }
 
-function fillDefaults(config) {
+export interface GenericServerConfig {
+    address: string;
+    port: number;
+}
+
+export interface WakeServerConfig extends GenericServerConfig {
+    mac: string;
+}
+
+export interface Config {
+    serverName: string;
+    skeletonServer: SkeletonServerConfig,
+    mcServer: GenericServerConfig,
+    wakeServer: WakeServerConfig
+}
+
+export function loadConfig (configPath?: string | Buffer | url.URL | number): Config {
+    configPath = configPath ? configPath : './config.yaml';
+
+    const yamlDoc = yaml.load(fs.readFileSync(configPath, 'utf8'));
+
+    const doc = fillDefaults(camelizeKeys(yamlDoc));
+    console.log(doc);
+
+    return doc;
+}
+
+function fillDefaults(config: any): Config {
     const defaultConfig = {
+        serverName: 'Example',
         skeletonServer: {
             port: DEFAULT_MC_PORT,
             onlineMode: true,
@@ -37,12 +60,8 @@ function fillDefaults(config) {
         }
     };
 
-    let newConfig = clone(config);
-    if(newConfig === null){
-        newConfig = {};
-    }
-
-    fillDefaultProperties(newConfig, defaultConfig);
+    let newConfig = config;
+    newConfig = fillDefaultProperties(newConfig, defaultConfig);
 
     // assume that wake_server address is the same as mc_server unless told otherwise
     fillDefaultProperties(newConfig.wake_server, newConfig.mc_server);
@@ -50,19 +69,27 @@ function fillDefaults(config) {
     return newConfig;
 }
 
-function fillDefaultProperties(obj, defaultObj) {
-    for (const prop in defaultObj) {
-        if (defaultObj.hasOwnProperty(prop)) {
-            if(obj[prop] === undefined || obj[prop] === null) {
-                obj[prop] = clone(defaultObj[prop]);
-            } else if(obj[prop] !== null && obj[prop].constructor === Object) {
-                fillDefaultProperties(obj[prop], defaultObj[prop]);
+function fillDefaultProperties(obj: Object, defaultObj: Object): Object {
+    if(is.null(obj)) {
+        return clone(defaultObj);
+    } else {
+        for(const key of Object.keys(defaultObj)) {
+            // @ts-ignore
+            if(is.not.existy(obj[key])) {
+                // @ts-ignore
+                obj[key] = clone(defaultObj[key]);
+            // @ts-ignore
+            } else if(is.json(obj[key])) {
+                // @ts-ignore
+                fillDefaultProperties(obj[key], defaultObj[key]);
             }
         }
+        return obj;
     }
+
 }
 
-const camelizeKeys = (obj) => {
+function camelizeKeys(obj: any): any {
     // https://stackoverflow.com/a/50620653/1400059
     if (Array.isArray(obj)) {
         return obj.map(v => camelizeKeys(v));
@@ -78,6 +105,6 @@ const camelizeKeys = (obj) => {
     return obj;
 };
 
-function clone(a) {
+function clone(a: any): any {
     return JSON.parse(JSON.stringify(a));
  }
