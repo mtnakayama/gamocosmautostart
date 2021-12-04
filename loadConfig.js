@@ -53,7 +53,7 @@ function fillDefaults(config) {
 function fillDefaultProperties(obj, defaultObj) {
     for (const prop in defaultObj) {
         if (defaultObj.hasOwnProperty(prop)) {
-            if(obj[prop] === undefined) {
+            if(obj[prop] === undefined || obj[prop] === null) {
                 obj[prop] = clone(defaultObj[prop]);
             } else if(obj[prop] !== null && obj[prop].constructor === Object) {
                 fillDefaultProperties(obj[prop], defaultObj[prop]);
