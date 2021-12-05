@@ -25,11 +25,12 @@ export function start(config: Config) {
         const status = await getServerStatus(config);
         console.log(status);
         if(status === ServerStatus.Up) {
+            const faviconPromise = getFavicon(config);
             await skeletonServer.stop();
-            favicon = await getFavicon(config);
             if(proxy === null) {
                 proxy = startProxy(config);
             }
+            favicon = await faviconPromise;
         } else {
             if(status === ServerStatus.Starting) {
                 skeletonServer.kickMessage = config.startingKickMessage;
