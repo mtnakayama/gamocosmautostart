@@ -177,13 +177,16 @@ function createClient(config: Config) {
 }
 
 async function getFavicon(config: Config): Promise<string | null> {
-    const pingResults = await mc.ping({
-        version: `${config.skeletonServer.protocolVersion}`,
-        host: config.mcServer.address,
-        port: config.mcServer.port,
-        closeTimeout: REFRESH_RATE
-    });
+    try {
+        const pingResults = await mc.ping({
+            version: `${config.skeletonServer.protocolVersion}`,
+            host: config.mcServer.address,
+            port: config.mcServer.port,
+            closeTimeout: REFRESH_RATE
+        });
 
-    // @ts-ignore
-    return pingResults.favicon ? pingResults.favicon : null;
+        // @ts-ignore
+        return pingResults.favicon ? pingResults.favicon : null;
+    } catch(err) {}
+    return null;
 }
