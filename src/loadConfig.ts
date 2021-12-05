@@ -6,6 +6,8 @@ import is from 'is';  // is.js
 import yaml from 'js-yaml';
 import lodash from 'lodash';
 
+import { clone } from './clone.js';
+
 const DEFAULT_MC_PORT = 25565;
 
 export interface SkeletonServerConfig {
@@ -101,7 +103,3 @@ function camelizeKeys(obj: any): any {
     }
     return obj;
 };
-
-function clone(a: any): any {
-    return JSON.parse(JSON.stringify(a));
- }
