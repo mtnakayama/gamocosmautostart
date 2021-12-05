@@ -18,6 +18,10 @@ enum ServerStatus {
 
 export function start(config: Config) {
     const skeletonServer = new SkeletonServer(config, config.offlineKickMessage);
+    skeletonServer.on('login', () => {
+        console.log('waking server.');
+        wake(config);
+    });
     let proxy: any = null;
     let favicon: string | null = null;  // cached favicon while offline
 
