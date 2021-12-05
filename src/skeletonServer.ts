@@ -25,12 +25,17 @@ export function start(config: Config) {
         const status = await getServerStatus(config);
         console.log(status);
         if(status === ServerStatus.Up) {
-            const faviconPromise = getFavicon(config);
+            let faviconPromise = null;
+            if(favicon === null) {
+                faviconPromise = getFavicon(config);
+            }
             await skeletonServer.stop();
             if(proxy === null) {
                 proxy = startProxy(config);
             }
-            favicon = await faviconPromise;
+            if(faviconPromise !== null) {
+                favicon = await faviconPromise;
+            }
         } else {
             if(status === ServerStatus.Starting) {
                 skeletonServer.kickMessage = config.startingKickMessage;
@@ -176,6 +181,7 @@ async function getFavicon(config: Config): Promise<string | null> {
         version: `${config.skeletonServer.protocolVersion}`,
         host: config.mcServer.address,
         port: config.mcServer.port,
+        closeTimeout: REFRESH_RATE
     });
 
     // @ts-ignore
