@@ -13,11 +13,12 @@ wake_server:  # the server to wake up
   # port: 9
 
 # server_description: {  # the message shown on the "Play Multiplayer" menu.
-#     text: "Hello ",
+#     text: "The server is sleeping!\n",
+#     color: "gold",
 #     extra: [
-#         { selector: "@p", color: "aqua" },
-#         { text: "\nThe server is not ready yet!\n", color: "red" },
-#         { text: "Please come back in less than 3 minutes."}
+#         { text: "If you want to launch, it please ", color: "white" },
+#         { text: "join it", bold: true, color: "green" },
+#         { text: ".", color: "white" }
 #     ]
 # }
 

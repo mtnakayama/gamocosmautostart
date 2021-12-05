@@ -33,7 +33,7 @@ const DEFAULT_SERVER_DESCRIPTION: Chat = {
     text: 'The server is sleeping!\n',
     color: 'gold',
     extra: [
-        { text: 'If you want to launch it please ', color: 'white' },
+        { text: 'If you want to launch, it please ', color: 'white' },
         { text: 'join it', bold: true, color: 'green' },
         { text: '.', color: 'white' }
     ]
