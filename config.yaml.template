@@ -11,3 +11,30 @@ wake_server:  # the server to wake up
   mac: 00:00:00:00:00:00
   # address: 255.255.255.255
   # port: 9
+
+# server_description: {  # the message shown on the "Play Multiplayer" menu.
+#     text: "Hello ",
+#     extra: [
+#         { selector: "@p", color: "aqua" },
+#         { text: "\nThe server is not ready yet!\n", color: "red" },
+#         { text: "Please come back in less than 3 minutes."}
+#     ]
+# }
+
+# offline_kick_message {# the message shown to the player when the server is offline.
+#     text: "Hello ",
+#     extra: [
+#         { selector: "@p", color: "aqua" },
+#         { text: "\nThe server is not ready yet!\n", color: "red" },
+#         { text: "Please come back in less than 3 minutes."}
+#     ]
+# }
+
+# starting_kick_message: {  # the message shown to the player when the server is starting up.
+#     text: "Hello ",
+#     extra: [
+#         { selector: "@p", color: "aqua" },
+#         { text: "!\n", color: "white" },
+#         { text: "The server will be ready very soon!", color: "gold" },
+#     ]
+# }

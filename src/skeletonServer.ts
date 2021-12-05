@@ -8,37 +8,7 @@ import { Chat, toChat, replacePlayerSelector } from './chat.js'
 import { Config } from './loadConfig.js';
 import { wake } from './wake.js';
 
-const REFRESH_RATE = 15000;  // refresh rate in ms
-
-const OFFLINE_KICK_MESSAGE: Chat = {
-    text: 'Hello ',
-    extra: [
-        { selector: "@p", color: 'aqua' },
-        { text: '\nThe server is not ready yet!\n', color: 'red' },
-        { text: 'Please come back in less than 3 minutes.'}
-    ]
-};
-
-const STARTING_KICK_MESSAGE: Chat = {
-    text: 'Hello ',
-    extra: [
-        { selector: "@p", color: 'aqua' },
-        { text: '!\n', color: 'white' },
-        { text: 'The server will be ready very soon™ in', color: 'gold' },
-        { text: ' XX ', obfuscated: true, color: 'gold' },
-        { text: 'seconds.', color: 'gold' },
-    ]
-};
-
-const OFFLINE_MESSAGE: Chat = {
-    text: 'The server is sleeping!\n',
-    color: 'gold',
-    extra: [
-        { text: 'If you want to launch it please ', color: 'white' },
-        { text: 'join it', color: 'green' },
-        { text: '.', color: 'white' }
-    ]
-};
+const REFRESH_RATE = 10000;  // refresh rate in ms
 
 enum ServerStatus {
     Down = 'down',
@@ -47,32 +17,38 @@ enum ServerStatus {
 }
 
 export function start(config: Config) {
-    const skeletonServer = new SkeletonServer(config, OFFLINE_MESSAGE, STARTING_KICK_MESSAGE);
+    const skeletonServer = new SkeletonServer(config, config.offlineKickMessage);
     let proxy: any = null;
+    let favicon: string | null = null;  // cached favicon while offline
 
     async function eventHandler() {
         const status = await getServerStatus(config);
         console.log(status);
-        switch(status) {
-            case ServerStatus.Up:
-                await skeletonServer.stop();
-                if(proxy === null) {
-                    proxy = startProxy(config);
-                }
-                break;
-            case ServerStatus.Starting:
-            case ServerStatus.Down:
-                await skeletonServer.start();
-                if(proxy !== null) {
-                    proxy.end();
-                    proxy = null;
-                }
-                break;
+        if(status === ServerStatus.Up) {
+            await skeletonServer.stop();
+            favicon = await getFavicon(config);
+            if(proxy === null) {
+                proxy = startProxy(config);
+            }
+        } else {
+            if(status === ServerStatus.Starting) {
+                skeletonServer.kickMessage = config.startingKickMessage;
+            } else {
+                skeletonServer.kickMessage = config.offlineKickMessage;
+            }
+            if(favicon !== null) {
+                skeletonServer.favicon = favicon;
+            }
+            await skeletonServer.start();
+            if(proxy !== null) {
+                proxy.end();
+                proxy = null;
+            }
         }
         setTimeout(async () => {
             eventHandler();
         },
-        15000);
+        REFRESH_RATE / 2);
     }
     eventHandler();
 }
@@ -92,15 +68,15 @@ class SkeletonServer extends EventEmitter {
     kickMessage: Chat;
     description: Chat;
     server: mc.Server | null;
+    favicon?: string;
 
     /** Constructs a new SkeletonServer but does not start it. */
-    constructor(config: Config, description: string | Chat = '',
-            kickMessage: string | Chat = '') {
+    constructor(config: Config, kickMessage: Chat) {
 
         super();
         this.config = config;
-        this.description = toChat(description);
-        this.kickMessage = toChat(kickMessage);
+        this.description = toChat(config.serverDescription);
+        this.kickMessage = kickMessage;
         this.server = null;
     }
 
@@ -144,7 +120,8 @@ class SkeletonServer extends EventEmitter {
             'online-mode': true,
             // @ts-ignore
             encryption: true,
-            version: `${this.config.skeletonServer.protocolVersion}`
+            version: `${this.config.skeletonServer.protocolVersion}`,
+            favicon: this.favicon
         });
     }
 };
@@ -191,4 +168,15 @@ function createClient(config: Config) {
         skipValidation: true,
         closeTimeout: REFRESH_RATE / 2
     });
+}
+
+async function getFavicon(config: Config): Promise<string | null> {
+    const pingResults = await mc.ping({
+        version: `${config.skeletonServer.protocolVersion}`,
+        host: config.mcServer.address,
+        port: config.mcServer.port,
+    });
+
+    // @ts-ignore
+    return pingResults.favicon ? pingResults.favicon : null;
 }

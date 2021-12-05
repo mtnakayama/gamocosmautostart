@@ -4,11 +4,17 @@ import { clone } from './clone.js';
 
 
 export interface Chat {
-    color?: string;
     text?: string;
-    obfuscated?: boolean;
     selector?: string;
-    extra?: Array<Chat>
+
+    color?: string;
+    obfuscated?: boolean;
+    bold?: boolean;
+    italic?: boolean;
+    underlined?: boolean;
+    strikethrough?: boolean;
+
+    extra?: Array<Chat>;
 }
 
 export function toChat(message: string | Chat): Chat {
